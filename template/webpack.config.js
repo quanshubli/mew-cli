@@ -1,7 +1,7 @@
 const path = require('path');
-const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const precss = require('precss');
 const autoprefixer = require('autoprefixer');
 
@@ -24,7 +24,7 @@ module.exports = {
   entry: './src/index.js',
 
   output: {
-    filename: '[name].[hash:8].js', // why must be hash rather than chunkhash ?
+    filename: '[name].[chunkhash:8].js',
     path: path.resolve(__dirname, 'dist'),
   },
 
@@ -36,7 +36,7 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /.less$/,
+        test: /\.less$/,
         use: [
           MiniCssExtractPlugin.loader,
           {
@@ -57,7 +57,7 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /.css$/,
+        test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
           {
@@ -66,27 +66,24 @@ module.exports = {
         ],
         include: /node_modules/,
       },
+      {
+        test: /\.(png|jpg|jpeg)$/,
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 1024 * 30,
+            fallback: 'file-loader',
+          },
+        }],
+      },
     ],
   },
 
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: '[name].[contenthash:8].css',
-    }),
+    new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: './public/index.html',
-      // chunksSortMode: 'none',
     }),
-    new webpack.HotModuleReplacementPlugin(),
   ],
-
-  devtool: 'source-map',
-
-  devServer: {
-    hot: true,
-    historyApiFallback: true,
-    open: true,
-    contentBase: path.join(__dirname, 'public'),
-  },
 };
