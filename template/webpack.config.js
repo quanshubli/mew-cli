@@ -40,7 +40,7 @@ module.exports = {
         use: [
           MiniCssExtractPlugin.loader,
           {
-            loader: 'css-loader',
+            loader: 'css-loader?minimize',
             options: {
               importLoaders: 2,
               modules: true,
@@ -61,7 +61,7 @@ module.exports = {
         use: [
           MiniCssExtractPlugin.loader,
           {
-            loader: 'css-loader',
+            loader: 'css-loader?minimize',
           },
         ],
         include: /node_modules/,
